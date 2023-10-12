@@ -26,7 +26,7 @@ const Home = () => {
   const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedTeam2, setSelectedTeam2] = useState('');
-  const teams = ['Atlanta Braves', 'Philidelphia Phillies', 'Chicago Bears']; // The idea would be to pull a team list of all teams for this
+  const teams = ['Atlanta Braves', 'Philidelphia Phillies', 'Chicago Bears', 'Pittsburgh Pirates', 'Orlando Blazers']; // The idea would be to pull a team list of all teams for this
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
