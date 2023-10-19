@@ -4,6 +4,8 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-na
 import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
+//  router.push(`/win/AltWins`)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -27,7 +29,6 @@ const Home = () => {
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedTeam2, setSelectedTeam2] = useState('');
   const teams = ['Atlanta Braves', 'Philidelphia Phillies', 'Chicago Bears', 'Pittsburgh Pirates', 'Orlando Blazers']; // The idea would be to pull a team list of all teams for this
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Stack.Screen
@@ -59,6 +60,7 @@ const Home = () => {
         </Picker>
         <TouchableOpacity style={styles.button} onPress={() => {
           router.push(`/win/Wins?team1=${selectedTeam}&team2=${selectedTeam2}`)
+          //router.push(`/win/AltWins`)
         }}>
           <Text style={styles.buttonText}>GO</Text>
         </TouchableOpacity>
