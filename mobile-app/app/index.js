@@ -1,8 +1,9 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
+
 
 //  router.push(`/win/AltWins`)
 
@@ -24,11 +25,30 @@ const styles = StyleSheet.create({
   },
 });
 
+
 const Home = () => {
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(null);
   const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedTeam2, setSelectedTeam2] = useState('');
+  const startTimer = () => {
+    startTimeRef.current = new Date(); // Record the start time
+  };
+
+  const stopTimerAndLog = () => {
+    if (startTimeRef.current) {
+      const endTime = new Date();
+      const duration = endTime - startTimeRef.current; // Calculate the duration
+      console.log(`Time on main page ${duration} milliseconds`);
+      startTimeRef.current = null;
+    }
+  };
+  
   const teams = ['Atlanta Braves', 'Philidelphia Phillies', 'Chicago Bears', 'Pittsburgh Pirates', 'Orlando Blazers']; // The idea would be to pull a team list of all teams for this
+  useEffect(() => {
+    startTimer();
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Stack.Screen
@@ -59,6 +79,7 @@ const Home = () => {
           ))}
         </Picker>
         <TouchableOpacity style={styles.button} onPress={() => {
+          stopTimerAndLog();
           router.push(`/win/Wins?team1=${selectedTeam}&team2=${selectedTeam2}`)
           //router.push(`/win/AltWins`)
         }}>
