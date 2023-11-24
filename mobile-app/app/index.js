@@ -4,6 +4,8 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-na
 import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
+import StatsAPI from '../lib/connect/statsApi'
+
 
 //  router.push(`/win/AltWins`)
 
@@ -27,6 +29,23 @@ const styles = StyleSheet.create({
 
 
 const Home = () => {
+
+  // load list of teams
+  const [isLoadingTeams, setLoadingTeams] = useState(true);
+  const [teams, setTeams] = useState([]);
+  const statsAPI = new StatsAPI();
+  const getTeams = async() => {
+    try {
+      const teamsResp = await statsAPI.getTeams();
+      setTeams(teamsResp);
+    } catch(e) {
+      console.error("error occurred while calling getTeams: " + e.message, e, e.stack);
+    }
+  };
+  useEffect(() => {
+    getTeams();
+  }, []);
+
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
   const router = useRouter();
@@ -45,7 +64,6 @@ const Home = () => {
     }
   };
   
-  const teams = ['Atlanta Braves', 'Philidelphia Phillies', 'Chicago Bears', 'Pittsburgh Pirates', 'Orlando Blazers']; // The idea would be to pull a team list of all teams for this
   useEffect(() => {
     startTimer();
   }, []);
@@ -79,9 +97,11 @@ const Home = () => {
           ))}
         </Picker>
         <TouchableOpacity style={styles.button} onPress={() => {
-          stopTimerAndLog();
-          router.push(`/win/Wins?team1=${selectedTeam}&team2=${selectedTeam2}`)
-          //router.push(`/win/AltWins`)
+          if (selectedTeam != selectedTeam2) {
+            stopTimerAndLog();
+            router.push(`/win/Wins?team1=${selectedTeam}&team2=${selectedTeam2}`)
+            //router.push(`/win/AltWins`)
+          }
         }}>
           <Text style={styles.buttonText}>GO</Text>
         </TouchableOpacity>
