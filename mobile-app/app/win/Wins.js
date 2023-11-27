@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, SafeAreaView, StyleSheet, Switch, Text } from 'react-native';
-import { Stack, useNavigation } from 'expo-router';
+import { Stack, useGlobalSearchParams, useNavigation, usePathname, useSearchParams } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import StatComponent from '../../components/StatComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colorPalette } from '../../resources/colors';
 
 export default function Wins() {
 
   const navigation = useNavigation();
+  const path = usePathname();
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
 
@@ -37,12 +39,17 @@ export default function Wins() {
       navigation.removeListener('beforeRemove', handleNavigationAway);
     };
   }, [navigation]);
-  const { team1, team2 } = useLocalSearchParams({ team1: String, team2: String }) //Hello guys, this is the teams that the person selects by full name
+  const { darkmode } = useLocalSearchParams({ darkmode: String });
+  const isDarkModeEnabled = darkmode === 'true';
+
+  console.log(isDarkModeEnabled)
   const prediction = "ATL"
   const styles = StyleSheet.create({
     statContainer: {
       paddingTop: 30,
       paddingBottom: 50,
+      backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.lightColors.safeAreaColor,
+
     },
   });
   const [clickCounts, setClickCounts] = useState({});
@@ -155,10 +162,10 @@ export default function Wins() {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.safeAreaColor  }}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "white" },
+          headerStyle: { backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.safeAreaColor  },
           headerShadowVisible: false,
           headerTitle: "At Bet",
           headerTitleStyle: {
@@ -169,6 +176,7 @@ export default function Wins() {
       <View style={{
         display: 'flex',
         alignItems: 'center',
+        backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.safeAreaColor
       }}>
         <Text style={{ color: "blue", fontSize: 60, paddingTop: 10, paddingBottom: 0 }}>ATL    vs    PHI</Text>
         <Text style={{ color: "blue", fontSize: 40, paddingTop: 30, paddingBottom: 30 }}>Prediction</Text>
@@ -193,6 +201,7 @@ export default function Wins() {
                   fontSize={30}
                   statDescription={data.statDescription}
                   onStatClick={handleStatClick}
+                  isDarkModeEnabled={isDarkModeEnabled}
                 />
               ))}
             </View>

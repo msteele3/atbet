@@ -1,8 +1,12 @@
-
-export const colors = {
-  primary: '#FF0000',
-  secondary: '#00FF00',
-  accent: '#0000FF',
-  text: '#000000',
-  background: '#FFFFFF',
+export const colorPalette = {
+    darkColors: {
+        safeAreaColor: "black",
+        pickerTextColor: "white",
+        selectedItemBackground: "rgba(128, 0, 128, 0.2)", // Shade of purple with low opacity
+    },
+    lightColors: {
+        safeAreaColor: "white",
+        pickerTextColor: "black",
+        selectedItemBackground: "transparent", // No specific color for light mode
+    },
 };

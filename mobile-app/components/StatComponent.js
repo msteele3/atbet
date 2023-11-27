@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { colorPalette } from '../resources/colors';
 
 const StatComponent = ({
   statTeamOne,
@@ -9,7 +10,21 @@ const StatComponent = ({
   fontSize = 16,
   statDescription,
   onStatClick, // Pass the callback function as a prop
+  isDarkModeEnabled
 }) => {
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor: colorPalette.lightColors.safeAreaColor,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '80%',
+      paddingBottom: 30,
+    },
+    textContainer: {
+      flex: 1,
+    },
+  });
   const isBetterStatTeamOne = betterStat === 1;
   const isBetterStatTeamTwo = betterStat === 2;
   const statTeamOneColor = isBetterStatTeamOne ? 'green' : 'red';
@@ -38,7 +53,7 @@ const StatComponent = ({
   };
 
   return (
-    <View style={{ display: 'flex', alignItems: 'center' }}>
+    <View style={{ display: 'flex', alignItems: 'center', backgroundColor: isDarkModeEnabled? colorPalette.darkColors.safeAreaColor: colorPalette.lightColors.safeAreaColor}}>
       <TouchableOpacity onPress={handleViewClick}>
         <View style={styles.container}>
           <View style={[styles.textContainer, { alignItems: 'center' }]}>
@@ -53,8 +68,8 @@ const StatComponent = ({
         </View>
       </TouchableOpacity>
       {displayTip ? (
-        <View style={{ width: '80%', justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-          <Text>{statDescription}</Text>
+        <View style={{ width: '80%', justifyContent: 'center', alignContent: 'center', alignItems: 'center', color: isDarkModeEnabled ? colorPalette.darkColors.pickerTextColor: colorPalette.lightColors.pickerTextColor }}>
+          <Text style={{textAlign: 'center',color:isDarkModeEnabled ? colorPalette.darkColors.pickerTextColor: colorPalette.lightColors.pickerTextColor}}>{statDescription}</Text>
         </View>
       ) : (
         <></>
@@ -63,18 +78,6 @@ const StatComponent = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '80%',
-    paddingBottom: 30,
-  },
-  textContainer: {
-    flex: 1,
-  },
-});
+
 
 export default StatComponent;

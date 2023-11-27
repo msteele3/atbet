@@ -5,6 +5,7 @@ import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
 import StatsAPI from '../lib/connect/statsApi'
+import { colorPalette, darkColors } from '../resources/colors';
 
 
 //  router.push(`/win/AltWins`)
@@ -34,6 +35,11 @@ const Home = () => {
   const [isLoadingTeams, setLoadingTeams] = useState(true);
   const [teams, setTeams] = useState([]);
   const statsAPI = new StatsAPI();
+
+  const selectedItemBackground = isDarkModeEnabled 
+                                 ? colorPalette.darkColors.selectedItemBackground 
+                                 : colorPalette.lightColors.selectedItemBackground;
+
   const getTeams = async() => {
     try {
       const teamsResp = await statsAPI.getTeams();
@@ -54,7 +60,7 @@ const Home = () => {
   const startTimer = () => {
     startTimeRef.current = new Date(); // Record the start time
   };
-  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true);
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
 
 
   const stopTimerAndLog = () => {
@@ -70,14 +76,15 @@ const Home = () => {
     startTimer();
   }, []);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+<SafeAreaView style={{ flex: 1, backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.safeAreaColor }}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "white" },
+          headerStyle: { backgroundColor: isDarkModeEnabled ? colorPalette.darkColors.safeAreaColor : colorPalette.lightColors.safeAreaColor},
           headerShadowVisible: false,
           headerTitle: "At Bet",
           headerTitleStyle: {
-            fontSize: 26
+            fontSize: 26,
+            color: isDarkModeEnabled ? colorPalette.darkColors.pickerTextColor : colorPalette.lightColors.pickerTextColor,
           }
 
         }}
@@ -89,23 +96,28 @@ const Home = () => {
 
       <View style={{ flex: 1, alignItems: 'center', padding: 20 }}>
         <Text style={{ fontSize: 50, color: 'blue', paddingTop: 0, paddingBottom: 0, width: "100%", alignItems:"center", paddingLeft: "10%"}}>Select Matchup</Text>
-        <Picker style={{ height: 40, width: 700, paddingBottom: 200 }}
+        <Picker style={{ height: 40, width: 700, paddingBottom: 200, backgroundColor: selectedItemBackground}}
           selectedValue={selectedTeam} onValueChange={(itemValue) => setSelectedTeam(itemValue)}>
           {teams.map((team, index) => (
-            <Picker.Item key={index} label={team} value={team} />
+            <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
+              ? colorPalette.darkColors.pickerTextColor 
+              : colorPalette.lightColors.pickerTextColor} />
           ))}
         </Picker>
         <Text style={{ fontSize: 50, color: 'blue', paddingBottom: 0 }}>vs</Text>
-        <Picker style={{ height: 40, width: 700, paddingBottom: 200 }}
+        <Picker style={{ height: 40, width: 700, paddingBottom: 200, backgroundColor: selectedItemBackground }}
           selectedValue={selectedTeam2} onValueChange={(itemValue) => setSelectedTeam2(itemValue)}>
           {teams.map((team, index) => (
-            <Picker.Item key={index} label={team} value={team} />
+            <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
+             ? colorPalette.darkColors.pickerTextColor 
+              : colorPalette.lightColors.pickerTextColor}/>
           ))}
         </Picker>
         <TouchableOpacity style={styles.button} onPress={() => {
           if (selectedTeam != selectedTeam2) {
             stopTimerAndLog();
-            router.push(`/win/Wins?team1=${selectedTeam}&team2=${selectedTeam2}`)
+            console.log(`/win/Wins?darkmode=${isDarkModeEnabled}`)
+            router.push(`/win/Wins?darkmode=${isDarkModeEnabled}`)
             //router.push(`/win/AltWins`)
           }
         }}>
