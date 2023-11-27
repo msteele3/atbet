@@ -169,7 +169,9 @@ export default function Wins() {
           headerShadowVisible: false,
           headerTitle: "At Bet",
           headerTitleStyle: {
-            fontSize: 32
+            fontSize: 32,
+            color: isDarkModeEnabled ? colorPalette.darkColors.pickerTextColor : colorPalette.lightColors.pickerTextColor,
+
           }
         }}
       />
