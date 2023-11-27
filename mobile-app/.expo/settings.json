@@ -1,3 +1,6 @@
 {
-  "urlRandomness": "zmf9kyk"
+  "urlRandomness": "zmf9kyk",
+  "dev": true,
+  "minify": false,
+  "https": false
 }

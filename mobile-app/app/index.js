@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, Switch } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 40,
+    fontSize: 38,
     fontWeight: 'bold',
   },
 });
@@ -54,6 +54,8 @@ const Home = () => {
   const startTimer = () => {
     startTimeRef.current = new Date(); // Record the start time
   };
+  const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(true);
+
 
   const stopTimerAndLog = () => {
     if (startTimeRef.current) {
@@ -75,14 +77,18 @@ const Home = () => {
           headerShadowVisible: false,
           headerTitle: "At Bet",
           headerTitleStyle: {
-            fontSize: 32
+            fontSize: 26
           }
 
         }}
       />
+      
+      <View style={{ backgroundColor: 'red', alignItems: 'center', justifyContent: 'center', height: 100, width: '100%' }}>
+        <Text style={{ color: 'white', fontSize: 24 }}>Advertisement</Text>
+      </View>
 
       <View style={{ flex: 1, alignItems: 'center', padding: 20 }}>
-        <Text style={{ fontSize: 60, color: 'blue', paddingTop: 60, paddingBottom: 0 }}>Select Matchup</Text>
+        <Text style={{ fontSize: 50, color: 'blue', paddingTop: 0, paddingBottom: 0, width: "100%", alignItems:"center", paddingLeft: "10%"}}>Select Matchup</Text>
         <Picker style={{ height: 40, width: 700, paddingBottom: 200 }}
           selectedValue={selectedTeam} onValueChange={(itemValue) => setSelectedTeam(itemValue)}>
           {teams.map((team, index) => (
@@ -106,10 +112,26 @@ const Home = () => {
           <Text style={styles.buttonText}>GO</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
 
-  )
-}
+
+      
+      <View style={{ position: 'absolute', bottom: 10, left: 10 }}>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ marginBottom: 10 }}>Enable Dark Mode</Text>
+          <Switch
+            style={{
+              display: 'flex',
+            }}
+            onValueChange={() => {
+              setIsDarkModeEnabled(!isDarkModeEnabled);
+            }}
+            value={isDarkModeEnabled}
+          />
+        </View>
+      </View>
+      </SafeAreaView>
+       );
+      }
 
 
 export default Home;
