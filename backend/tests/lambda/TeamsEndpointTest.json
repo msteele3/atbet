@@ -1,0 +1,6 @@
+{
+  "httpMethod": "GET",
+  "path": "/teams",
+  "queryStringParameters": null,
+  "body": null
+}

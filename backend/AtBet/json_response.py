@@ -13,6 +13,7 @@ class JSONResponse:
             'statusCode': self.code,
             'isBase64Encoded': False,
             'headers': {
+                'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
             },
             'body': json.dumps(self.payload),

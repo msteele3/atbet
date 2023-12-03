@@ -1,0 +1,9 @@
+{
+  "httpMethod": "GET",
+  "path": "/stats",
+  "queryStringParameters": {
+    "team1": "Atlanta%20Braves",
+    "team2": "Philadelphia Phillies"
+  },
+  "body": null
+}

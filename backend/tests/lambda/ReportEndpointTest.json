@@ -1,0 +1,6 @@
+{
+  "httpMethod": "POST",
+  "path": "/report",
+  "queryStringParameters": null,
+  "body": "{\"type\": \"timer\",\"page\": \"stats\",\"elapsed_time\": 13}"
+}

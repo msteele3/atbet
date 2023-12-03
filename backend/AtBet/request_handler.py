@@ -152,7 +152,7 @@ class RequestHandler:
         })
 
     @staticmethod
-    def post_metric(query_params, body) -> JSONResponse:
+    def post_metric(_query_params, body) -> JSONResponse:
         try:
             request_params = json.loads(body)
         except json.JSONDecodeError as e:
@@ -237,6 +237,27 @@ class RequestHandler:
         return JSONResponse(HTTPStatus.OK, {"message": "successfully posted metric"})
 
     @staticmethod
-    def get_metrics(query_params, body) -> JSONResponse:
-        return JSONResponse(HTTPStatus.OK, {})
+    def get_metrics(_query_params, _body) -> JSONResponse:
+        response_data = {}
+        try:
+            response_data['timers'] = Metrics.get_timer_metrics()
+        except Exception as e:
+            return JSONResponse(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                {
+                    "error": "get_metrics: failed to retrieve timer metrics: " + str(e),
+                    "traceback": traceback.format_exc()
+                },
+            )
+        try:
+            response_data['features'] = Metrics.get_feature_metrics()
+        except Exception as e:
+            return JSONResponse(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                {
+                    "error": "get_metrics: failed to retrieve timer metrics: " + str(e),
+                    "traceback": traceback.format_exc()
+                },
+            )
+        return JSONResponse(HTTPStatus.OK, {'metrics': response_data})
 

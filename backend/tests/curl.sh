@@ -1,0 +1,5 @@
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d "{\"httpMethod\": \"GET\", \"path\": \"/teams\", \"queryStringParameters\": \"\", \"body\": \"\"}"
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d "{\"httpMethod\": \"GET\", \"path\": \"/stats\", \"queryStringParameters\": {\"team1\": \"Atlanta%20Braves\", \"team2\": \"Philadelphia Phillies\"}, \"body\": \"\"}"
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d "{\"httpMethod\": \"POST\", \"path\": \"/report\", \"queryStringParameters\": {}, \"body\": \"{\\\"type\\\":\\\"timer\\\",\\\"page\\\":\\\"opening\\\"}\"}"
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d "{\"httpMethod\": \"POST\", \"path\": \"/report\", \"queryStringParameters\": {}, \"body\": \"{\\\"type\\\":\\\"feature\\\",\\\"feature\\\":\\\"tooltip\\\",\\\"instance\\\":\\\"WHIP\\\",\\\"used\\\":\\\"true\\\"}\"}"
+curl -X POST "http://localhost:9000/2015-03-31/functions/function/invocations" -d "{\"httpMethod\": \"GET\", \"path\": \"/fetch\", \"queryStringParameters\": {}, \"body\": \"\"}"
