@@ -44,6 +44,8 @@ const Home = () => {
     try {
       const teamsResp = await statsAPI.getTeams();
       setTeams(teamsResp);
+      setSelectedTeam(teamsResp[0])
+      setSelectedTeam2(teamsResp[0])
     } catch(e) {
       console.error("error occurred while calling getTeams: " + e.message, e, e.stack);
     }
@@ -98,26 +100,43 @@ const Home = () => {
         <Text style={{ fontSize: 50, color: 'blue', paddingTop: 0, paddingBottom: 0, width: "100%", alignItems:"center", paddingLeft: "10%"}}>Select Matchup</Text>
         <Picker style={{ height: 40, width: 700, paddingBottom: 200, backgroundColor: selectedItemBackground}}
           selectedValue={selectedTeam} onValueChange={(itemValue) => setSelectedTeam(itemValue)}>
-          {teams.map((team, index) => (
-            <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
-              ? colorPalette.darkColors.pickerTextColor 
-              : colorPalette.lightColors.pickerTextColor} />
-          ))}
+          {
+            teams.length > 0
+            ?
+              teams.map((team, index) => (
+                <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
+                  ? colorPalette.darkColors.pickerTextColor 
+                  : colorPalette.lightColors.pickerTextColor} />
+              ))
+            :
+              <Picker.Item label="Loading..." value="Loading..." color={isDarkModeEnabled 
+                ? colorPalette.darkColors.pickerTextColor 
+                : colorPalette.lightColors.pickerTextColor} />
+          }
         </Picker>
         <Text style={{ fontSize: 50, color: 'blue', paddingBottom: 0 }}>vs</Text>
         <Picker style={{ height: 40, width: 700, paddingBottom: 200, backgroundColor: selectedItemBackground }}
           selectedValue={selectedTeam2} onValueChange={(itemValue) => setSelectedTeam2(itemValue)}>
-          {teams.map((team, index) => (
-            <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
-             ? colorPalette.darkColors.pickerTextColor 
-              : colorPalette.lightColors.pickerTextColor}/>
-          ))}
+          {
+            teams.length > 0
+            ?
+              teams.map((team, index) => (
+                <Picker.Item key={index} label={team} value={team} color={isDarkModeEnabled 
+                ? colorPalette.darkColors.pickerTextColor 
+                  : colorPalette.lightColors.pickerTextColor}/>
+              ))
+            :
+              <Picker.Item label="Loading..." value="Loading..." color={isDarkModeEnabled 
+                ? colorPalette.darkColors.pickerTextColor 
+                : colorPalette.lightColors.pickerTextColor} />
+          }
         </Picker>
         <TouchableOpacity style={styles.button} onPress={() => {
-          if (selectedTeam != selectedTeam2) {
+          if (teams != [] && selectedTeam != selectedTeam2) {
             stopTimerAndLog();
-            console.log(`/win/Wins?darkmode=${isDarkModeEnabled}`)
-            router.push(`/win/Wins?darkmode=${isDarkModeEnabled}`)
+            const url = `/win/Wins?darkmode=${isDarkModeEnabled}&team1=${selectedTeam}&team2=${selectedTeam2}`
+            console.log(url)
+            router.push(url)
             //router.push(`/win/AltWins`)
           }
         }}>
