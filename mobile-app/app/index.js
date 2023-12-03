@@ -4,6 +4,7 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, Switch } from '
 import { Stack, useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
+import MetricsAPI from '../lib/connect/metricsApi'
 import StatsAPI from '../lib/connect/statsApi'
 import { colorPalette, darkColors } from '../resources/colors';
 
@@ -34,6 +35,7 @@ const Home = () => {
   // load list of teams
   const [isLoadingTeams, setLoadingTeams] = useState(true);
   const [teams, setTeams] = useState([]);
+  const metricsAPI = new MetricsAPI();
   const statsAPI = new StatsAPI();
 
   const selectedItemBackground = isDarkModeEnabled 
@@ -71,6 +73,7 @@ const Home = () => {
       const duration = endTime - startTimeRef.current; // Calculate the duration
       console.log(`Time on main page ${duration} milliseconds`);
       startTimeRef.current = null;
+      metricsAPI.reportTimerMetric('opening', Math.round(duration / 1000));
     }
   };
   

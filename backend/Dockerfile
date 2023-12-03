@@ -10,8 +10,8 @@ ENV MPLCONFIGDIR "/tmp/matplotlib-cache"
 
 RUN mkdir ${PYBASEBALL_CACHE}  \
     && mkdir ${MPLCONFIGDIR} \
-    && python -m pip install --upgrade pip \
-    && pip install -r requirements.txt
+    && python -m pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY . ${LAMBDA_TASK_ROOT}
 

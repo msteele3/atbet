@@ -3,3 +3,5 @@
 mobile-app/node_modules/
 **/venv/
 **/.idea/
+backend/config.txt
+

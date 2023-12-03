@@ -6,6 +6,7 @@ import StatComponent from '../../components/StatComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colorPalette } from '../../resources/colors';
 
+import MetricsAPI from '../../lib/connect/metricsApi'
 import StatsAPI from '../../lib/connect/statsApi'
 
 export default function Wins() {
@@ -13,6 +14,7 @@ export default function Wins() {
   const [statsRaw, setStatsRaw] = useState({});
   const [stats, setStats] = useState([]);
   const [prediction, setPrediction] = useState('');
+  const metricsAPI = new MetricsAPI();
   const statsAPI = new StatsAPI();
   const {team1} = useLocalSearchParams({ team1: String });
   const {team2} = useLocalSearchParams({ team2: String });
@@ -32,9 +34,9 @@ export default function Wins() {
                            : `Betting odds for Team One vs. Team Two. Negative value (${statsResp['odds'][1]}) indicates Team Two is favored, while a positive value (${statsResp['odds'][2]}) suggests Team One is the underdog.`
         },
         {
-          statTeamOne: '' + (parseFloat(statsResp['wl'][0]) * 100) + '%',
+          statTeamOne: '' + (parseFloat(statsResp['wl'][0]) * 100).toFixed(1) + '%',
           statName: 'W-L%',
-          statTeamTwo: '' + (parseFloat(statsResp['wl'][1]) * 100) + '%',
+          statTeamTwo: '' + (parseFloat(statsResp['wl'][1]) * 100).toFixed(1) + '%',
           betterStat: parseFloat(statsResp['wl'][0]) > parseFloat(statsResp['wl'][1]) ? 1 : 2,
           fontSize: 20,
           statDescription: parseFloat(statsResp['wl'][0]) > parseFloat(statsResp['wl'][1])
@@ -121,6 +123,7 @@ export default function Wins() {
       const duration = endTime - startTimeRef.current; // Calculate the duration
       console.log(`Time on wins page ${duration} milliseconds`);
       startTimeRef.current = null;
+      metricsAPI.reportTimerMetric('stats', Math.round(duration / 1000))
     }
   };
 
@@ -158,6 +161,7 @@ export default function Wins() {
       [statName]: (clickCounts[statName] || 0) + 1,
     }));
     console.log(clickCounts)
+    metricsAPI.reportFeatureMetric('tooltip', statName, true)
   };
 
   useEffect(() => {

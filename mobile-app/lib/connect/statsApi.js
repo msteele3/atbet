@@ -22,7 +22,11 @@ const StatsAPI = class {
                 console.log(respBody);
                 teams = respBody.teams;
             } else {
-                console.log("/teams request failed: ", resp);
+                console.error("/teams request failed: ", resp);
+                try {
+                    const respBody = await resp.json();
+                    console.error(respBody);
+                } catch (e) {}
             }
         } catch (e) {
             console.error("error occurred during getTeams: " + e.message, e, e.stack);

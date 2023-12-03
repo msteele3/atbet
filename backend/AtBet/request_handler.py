@@ -2,10 +2,11 @@ from http import HTTPMethod, HTTPStatus
 from pybaseball.standings import standings
 from pybaseball.utils import most_recent_season
 from pybaseball import cache
+import json
 import traceback
 import urllib.parse
 
-from AtBet import JSONResponse, Stats
+from AtBet import JSONResponse, Metrics, Stats
 
 cache.enable()
 
@@ -25,6 +26,12 @@ class RequestHandler:
             },
             "/stats": {
                 HTTPMethod.GET: RequestHandler.get_stats
+            },
+            "/report": {
+                HTTPMethod.POST: RequestHandler.post_metric
+            },
+            "/fetch": {
+                HTTPMethod.GET: RequestHandler.get_metrics
             }
         }
 
@@ -45,7 +52,7 @@ class RequestHandler:
         return handler(query_params, body)
 
     @staticmethod
-    def list_teams(query_params, body) -> JSONResponse:
+    def list_teams(_query_params, _body) -> JSONResponse:
         all_teams = []
         try:
             for division in standings():
@@ -59,7 +66,7 @@ class RequestHandler:
         return JSONResponse(HTTPStatus.OK, {"teams": all_teams})
 
     @staticmethod
-    def get_stats(query_params, body) -> JSONResponse:
+    def get_stats(query_params, _body) -> JSONResponse:
         if not query_params or 'team1' not in query_params or not query_params['team1']:
             return JSONResponse(HTTPStatus.BAD_REQUEST, {"error": "Missing required parameter 'team1'"})
         team1 = urllib.parse.unquote(query_params['team1'])
@@ -143,4 +150,93 @@ class RequestHandler:
             }
             # 'perf': [el4, el5, el6, el7],
         })
+
+    @staticmethod
+    def post_metric(query_params, body) -> JSONResponse:
+        try:
+            request_params = json.loads(body)
+        except json.JSONDecodeError as e:
+            return JSONResponse(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "post_metric: failed to decode request body: " + str(e), "traceback": traceback.format_exc()}
+            )
+
+        if 'type' in request_params and request_params['type'] in ['timer', 'feature']:
+            if request_params['type'] == 'timer':
+                if 'page' in request_params and request_params['page'] in ['opening', 'stats']:
+                    page = request_params['page']
+                else:
+                    return JSONResponse(
+                        HTTPStatus.BAD_REQUEST,
+                        {"error": "post_metric: failed to provide valid required parameter 'page',"
+                                          " must be either 'opening' or 'stats'"}
+                    )
+                if 'elapsed_time' in request_params and isinstance(request_params['elapsed_time'], int) \
+                        and request_params['elapsed_time'] > 0:
+                    elapsed_time = request_params['elapsed_time']
+                else:
+                    return JSONResponse(
+                        HTTPStatus.BAD_REQUEST,
+                        {"error": "post_metric: failed to provide valid required parameter 'elapsed_time',"
+                                          " should be a positive integer"}
+                    )
+                try:
+                    Metrics.report_timer_metric(page, elapsed_time)
+                except Exception as e:
+                    return JSONResponse(
+                        HTTPStatus.INTERNAL_SERVER_ERROR,
+                        {
+                            "error": "post_metric: failed to report timer metric: " + str(e),
+                            "traceback": traceback.format_exc()
+                        },
+                    )
+            elif request_params['type'] == 'feature':
+                if 'feature' in request_params and request_params['feature'] in ['tooltip']:
+                    feature = request_params['feature']
+                else:
+                    return JSONResponse(
+                        HTTPStatus.BAD_REQUEST,
+                        {"error": "post_metric: failed to provide valid required parameter 'feature',"
+                                          " must be 'tooltip'"}
+                    )
+                if 'instance' in request_params and isinstance(request_params['instance'], str) \
+                        and request_params['instance']:
+                    instance = request_params['instance']
+                else:
+                    return JSONResponse(
+                        HTTPStatus.BAD_REQUEST,
+                        {"error": "post_metric: failed to provide valid required parameter 'instance',"
+                                          " must be a non-empty string"}
+                    )
+                if 'used' in request_params and isinstance(request_params['used'], bool):
+                    used = request_params['used']
+                else:
+                    return JSONResponse(
+                        HTTPStatus.BAD_REQUEST,
+                        {"error": "post_metric: failed to provide valid required parameter 'used',"
+                                          " must be a bool"}
+                    )
+
+                try:
+                    Metrics.report_feature_metric(feature, instance, used)
+                except Exception as e:
+                    return JSONResponse(
+                        HTTPStatus.INTERNAL_SERVER_ERROR,
+                        {
+                            "error": "post_metric: failed to report feature metric: " + str(e),
+                            "traceback": traceback.format_exc()
+                        },
+                    )
+        else:
+            return JSONResponse(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "post_metric: failed to provide valid required parameter 'type',"
+                                  " must be either 'timer' or 'feature'"}
+            )
+
+        return JSONResponse(HTTPStatus.OK, {"message": "successfully posted metric"})
+
+    @staticmethod
+    def get_metrics(query_params, body) -> JSONResponse:
+        return JSONResponse(HTTPStatus.OK, {})
 
